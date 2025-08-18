@@ -58,17 +58,18 @@ jobs:
 
       - name: Run tests (Node)
         if: matrix.runtime == 'node20' || matrix.runtime == 'node22'
-        run: node --test
+        run: pnpm test:node
 
       - name: Run tests (Bun)
         if: matrix.runtime == 'bun'
-        run: bun test
+        run: pnpm test:bun
 
       - name: Bench
         env:
           RUNTIME: ${{ matrix.runtime }}
           PM: ${{ matrix.package_manager }}
           TS_MODE: ${{ matrix.ts_mode }}
+        shell: bash
         run: |
           if [ "${{ matrix.runtime }}" = "bun" ]; then
             bun ./scripts/bench.mjs
