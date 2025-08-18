@@ -1,0 +1,30 @@
+{
+  "name": "automation-hpc-api-meta-automation-combo-lab",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Compare Bun vs Node runtimes, pnpm vs bun package managers, and TS resolution modes across OS.",
+  "scripts": {
+    "build:bundler": "tsc -p tsconfig.bundler.json",
+    "build:nodeNext": "tsc -p tsconfig.nodeNext.json",
+    "build": "node ./scripts/select-build.mjs",
+    "start:node": "node dist/server.js",
+    "start:bun": "bun dist/server.js",
+    "bench": "node ./scripts/bench.mjs",
+    "bench:bun": "bun ./scripts/bench.mjs",
+    "test:node": "node --test",
+    "test:bun": "bun test",
+    "firebase:emulators": "firebase emulators:start",
+    "postinstall": "node ./scripts/postinstall-hint.mjs"
+  },
+  "engines": {
+    "node": ">=20.11.0",
+    "pnpm": ">=9.0.0"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "typescript": "^5.6.3",
+    "@types/node": "^22.7.5",
+    "firebase-tools": "^13.12.0"
+  }
+}

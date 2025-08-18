@@ -1,0 +1,83 @@
+name: Compare combos (Node/Bun x pnpm/bun x TS modes)
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  matrix:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        runtime: [node20, node22, bun]
+        package_manager: [pnpm, bun]
+        ts_mode: [bundler, nodeNext]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node (20)
+        if: matrix.runtime == 'node20'
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Setup Node (22)
+        if: matrix.runtime == 'node22'
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'pnpm'
+
+      - name: Setup pnpm
+        if: matrix.package_manager == 'pnpm'
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Setup Bun
+        if: matrix.runtime == 'bun' || matrix.package_manager == 'bun'
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+
+      - name: Install dependencies (pnpm)
+        if: matrix.package_manager == 'pnpm'
+        run: pnpm install --frozen-lockfile
+
+      - name: Install dependencies (bun)
+        if: matrix.package_manager == 'bun'
+        run: bun install --frozen-lockfile
+
+      - name: Build (TS mode)
+        env:
+          TS_MODE: ${{ matrix.ts_mode }}
+        run: node ./scripts/select-build.mjs
+
+      - name: Run tests (Node)
+        if: matrix.runtime == 'node20' || matrix.runtime == 'node22'
+        run: node --test
+
+      - name: Run tests (Bun)
+        if: matrix.runtime == 'bun'
+        run: bun test
+
+      - name: Bench
+        env:
+          RUNTIME: ${{ matrix.runtime }}
+          PM: ${{ matrix.package_manager }}
+          TS_MODE: ${{ matrix.ts_mode }}
+        run: |
+          if [ "${{ matrix.runtime }}" = "bun" ]; then
+            bun ./scripts/bench.mjs
+          else
+            node ./scripts/bench.mjs
+          fi
+
+      - name: Upload results
+        uses: actions/upload-artifact@v4
+        with:
+          name: results-${{ matrix.os }}-${{ matrix.runtime }}-${{ matrix.package_manager }}-${{ matrix.ts_mode }}
+          path: results/*.json
