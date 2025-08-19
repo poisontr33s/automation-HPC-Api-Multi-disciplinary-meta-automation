@@ -110,7 +110,7 @@ Follow these exact commands to set up the development environment:
    if __name__ == "__main__": uvicorn.run(app, host="0.0.0.0", port=8000)
    EOF
    
-   # Then test with: python3 /tmp/test_api.py (background) and curl http://localhost:8000/test
+   # Then test with: python3 test_api.py (background) and curl http://localhost:8000/test
    ```
 
 ### Manual Validation Requirements:
