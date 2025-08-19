@@ -135,7 +135,10 @@ EOF
 python3 /tmp/test_complete.py &
 sleep 3  # Wait for server start
 curl http://localhost:8000/ && curl http://localhost:8000/validate
-pkill -f test_complete.py  # Stop server
+python3 /tmp/test_complete.py & SERVER_PID=$!
+sleep 3  # Wait for server start
+curl http://localhost:8000/ && curl http://localhost:8000/validate
+kill $SERVER_PID  # Stop server
 
 # Expected output: {"status":"working"} and {"config":true,"structure":true}
 ```
