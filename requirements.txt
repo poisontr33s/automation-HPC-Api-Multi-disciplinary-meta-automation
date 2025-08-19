@@ -1,0 +1,11 @@
+# Basic API and data handling
+fastapi
+uvicorn
+pydantic
+requests
+
+# Common AI/ML libraries
+numpy
+# For deep learning, uncomment one of the following:
+# tensorflow
+# torch
