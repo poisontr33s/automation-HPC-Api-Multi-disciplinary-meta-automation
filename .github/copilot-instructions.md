@@ -92,7 +92,7 @@ Follow these exact commands to set up the development environment:
    
    # Full server test (if you need to validate server functionality):
    # Create temp file and run server test
-   cat > /tmp/test_api.py << 'EOF'
+   cat > test_api.py << 'EOF'
    from fastapi import FastAPI
    import uvicorn
    app = FastAPI()
