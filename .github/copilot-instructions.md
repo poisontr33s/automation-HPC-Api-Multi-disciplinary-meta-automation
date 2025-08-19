@@ -17,7 +17,7 @@ Follow these exact commands to set up the development environment:
 
 2. **Install dependencies:**
    ```bash
-   pip install -r requirements.txt  # Takes ~10 seconds. NEVER CANCEL. Set timeout to 60+ seconds for safety.
+   pip install -r requirements.txt  # Takes ~10 seconds. NEVER CANCEL. Set timeout to 120+ seconds minimum for safety.
    ```
    This installs: FastAPI, Uvicorn, Pydantic, Requests, NumPy
 
