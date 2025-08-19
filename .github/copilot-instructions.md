@@ -42,7 +42,8 @@ Follow these exact commands to set up the development environment:
    def root(): return {'message': 'Hello World'}
    if __name__ == '__main__': uvicorn.run(app, host='0.0.0.0', port=8000)
    "
-   ```
+   # Example: Create a simple test API
+   # 1. Create a file named `test_api.py` with the following content:
 
 2. **Test running applications:**
    ```bash
