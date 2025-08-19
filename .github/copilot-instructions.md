@@ -53,7 +53,7 @@ Follow these exact commands to set up the development environment:
        return {'message': 'Hello World'}
    if __name__ == '__main__':
        uvicorn.run(app, host='0.0.0.0', port=8000)
-
+   # 1. Create a file named `test_api.py` with the following content:
 2. **Test running applications:**
    ```bash
    curl http://localhost:8000/  # Test API endpoint
