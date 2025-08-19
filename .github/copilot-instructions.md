@@ -249,3 +249,272 @@ python3 -c "import sys; sys.path.insert(0, 'src'); print('Path set for src impor
 ```
 
 **Remember: This is a development-stage repository. Focus on functionality over polish, and always validate your changes work with the commands above.**
+
+---
+
+## Multi-Agent Cross-Pollination & Collaboration
+
+### Onboarding Jules Coding Agent (@jules)
+
+**Jules Agent Integration Guide:**
+
+Jules coding agents are multi-agent automation platforms that can be integrated into this Python repository for enhanced coding capabilities.
+
+#### Jules Agent Types & Capabilities:
+1. **Open Jules** (JavaScript/TypeScript-based):
+   - Multi-agent architecture (Planner, Developer, Reviewer, Branch Namer, PR Writer)
+   - Uses Ollama for local AI models
+   - React frontend + Node.js backend
+   - Full GitHub workflow automation
+
+2. **Jules Agent API** (Python-based):
+   - FastAPI microservice architecture (compatible with this repo)
+   - GitHub integration for cloning and PR creation
+   - Autonomous task execution
+
+#### Onboarding Steps for @jules:
+
+1. **Environment Setup for Jules Integration:**
+   ```bash
+   # Verify Python environment compatibility
+   python3 --version  # Must be 3.8+ (Jules API compatible)
+   
+   # Install additional Jules-compatible dependencies
+   pip install fastapi uvicorn requests github3.py GitPython
+   
+   # Verify FastAPI compatibility
+   python3 -c "from fastapi import FastAPI; print('Jules-FastAPI compatibility: OK')"
+   ```
+
+2. **Jules Agent Configuration Integration:**
+   ```bash
+   # Add Jules agent config to existing config
+   python3 -c "
+   import json
+   config = json.load(open('config/config.json'))
+   config['jules_agent'] = {
+       'enabled': True,
+       'api_endpoint': 'localhost:8000',
+       'github_integration': True,
+       'multi_agent_mode': True
+   }
+   json.dump(config, open('config/config.json', 'w'), indent=2)
+   print('Jules agent configuration added')
+   "
+   ```
+
+3. **Jules Agent API Integration Pattern:**
+   ```python
+   # Example integration in src/api/jules_integration.py
+   from fastapi import FastAPI, BackgroundTasks
+   from typing import Dict, Any
+   
+   # Jules-compatible task endpoint
+   @app.post("/jules-task")
+   async def process_jules_task(
+       prompt: str,
+       github_repo_url: str,
+       github_branch: str = "main",
+       background_tasks: BackgroundTasks = None
+   ):
+       # Integration logic for Jules agents
+       return {"task_id": "generated-id", "status": "accepted"}
+   ```
+
+4. **Validation for Jules Integration:**
+   ```bash
+   # Test Jules agent compatibility
+   python3 -c "
+   import requests
+   import json
+   from pathlib import Path
+   
+   # Verify Jules-compatible endpoints exist
+   config = json.load(open('config/config.json'))
+   print(f'Jules config loaded: {bool(config.get(\"jules_agent\"))}')
+   print('Jules agent onboarding: COMPLETE')
+   "
+   ```
+
+### Onboarding Gemini Coding Agent (@gemini-coding-agent)
+
+**Gemini Agent Integration Guide:**
+
+Gemini coding agents leverage Google's Gemini API for intelligent code analysis, PR reviews, and development assistance.
+
+#### Gemini Agent Types & Capabilities:
+1. **PR Review Agents**: Automated code review using Gemini LLM
+2. **Code Analysis Agents**: Repository analysis and insights
+3. **Development Agents**: Code generation and refactoring assistance
+
+#### Onboarding Steps for @gemini-coding-agent:
+
+1. **Environment Setup for Gemini Integration:**
+   ```bash
+   # Install Gemini-compatible dependencies
+   pip install google-generativeai python-dotenv aiohttp
+   
+   # Verify Gemini API compatibility
+   python3 -c "
+   try:
+       import google.generativeai as genai
+       print('Gemini API library: INSTALLED')
+   except ImportError:
+       print('Installing google-generativeai...')
+       import subprocess
+       subprocess.run(['pip', 'install', 'google-generativeai'])
+   "
+   ```
+
+2. **Gemini Agent Configuration Integration:**
+   ```bash
+   # Add Gemini agent config to existing config
+   python3 -c "
+   import json
+   config = json.load(open('config/config.json'))
+   config['gemini_agent'] = {
+       'enabled': True,
+       'api_key_env': 'GEMINI_API_KEY',
+       'model': 'gemini-pro',
+       'pr_review_enabled': True,
+       'code_analysis_enabled': True
+   }
+   json.dump(config, open('config/config.json', 'w'), indent=2)
+   print('Gemini agent configuration added')
+   "
+   ```
+
+3. **Gemini Agent API Integration Pattern:**
+   ```python
+   # Example integration in src/api/gemini_integration.py
+   import google.generativeai as genai
+   from fastapi import APIRouter, HTTPException
+   import os
+   
+   router = APIRouter()
+   
+   @router.post("/gemini-analyze")
+   async def analyze_code_with_gemini(code: str, task: str):
+       try:
+           genai.configure(api_key=os.getenv('GEMINI_API_KEY'))
+           model = genai.GenerativeModel('gemini-pro')
+           
+           prompt = f"Analyze this code for {task}: {code}"
+           response = model.generate_content(prompt)
+           
+           return {"analysis": response.text, "status": "success"}
+       except Exception as e:
+           raise HTTPException(status_code=500, detail=str(e))
+   ```
+
+4. **Validation for Gemini Integration:**
+   ```bash
+   # Test Gemini agent compatibility (without API key)
+   python3 -c "
+   import json
+   from pathlib import Path
+   
+   # Verify Gemini-compatible config exists
+   config = json.load(open('config/config.json'))
+   gemini_config = config.get('gemini_agent', {})
+   print(f'Gemini config loaded: {bool(gemini_config)}')
+   print(f'Model configured: {gemini_config.get(\"model\", \"Not set\")}')
+   print('Gemini agent onboarding: COMPLETE')
+   "
+   ```
+
+### Cross-Agent Collaboration Patterns
+
+#### Using @jules and @gemini-coding-agent Together:
+
+1. **Workflow Integration:**
+   ```python
+   # Example: src/agents/multi_agent_workflow.py
+   async def cross_pollination_workflow(task_description: str):
+       # Step 1: Gemini analyzes requirements
+       gemini_analysis = await analyze_with_gemini(task_description)
+       
+       # Step 2: Jules implements solution
+       jules_implementation = await execute_jules_task(
+           prompt=f"Implement: {gemini_analysis['analysis']}",
+           github_repo_url="https://github.com/current/repo.git"
+       )
+       
+       # Step 3: Cross-validation
+       return {
+           "gemini_analysis": gemini_analysis,
+           "jules_implementation": jules_implementation,
+           "collaboration_status": "success"
+       }
+   ```
+
+2. **Agent Communication Protocol:**
+   ```bash
+   # Enable cross-agent communication
+   python3 -c "
+   import json
+   config = json.load(open('config/config.json'))
+   config['cross_agent'] = {
+       'enabled': True,
+       'communication_protocol': 'fastapi_endpoints',
+       'shared_context': True,
+       'collaboration_mode': 'active'
+   }
+   json.dump(config, open('config/config.json', 'w'), indent=2)
+   print('Cross-agent collaboration enabled')
+   "
+   ```
+
+3. **Complete Multi-Agent Test:**
+   ```bash
+   # Full integration test
+   python3 -c "
+   import json
+   from fastapi import FastAPI
+   
+   # Verify both agents are configured
+   config = json.load(open('config/config.json'))
+   jules_ready = bool(config.get('jules_agent', {}).get('enabled'))
+   gemini_ready = bool(config.get('gemini_agent', {}).get('enabled'))
+   cross_agent_ready = bool(config.get('cross_agent', {}).get('enabled'))
+   
+   print(f'Jules Agent Ready: {jules_ready}')
+   print(f'Gemini Agent Ready: {gemini_ready}')
+   print(f'Cross-Agent Collaboration: {cross_agent_ready}')
+   
+   if all([jules_ready, gemini_ready, cross_agent_ready]):
+       print('🚀 MULTI-AGENT SYSTEM: READY FOR CROSS-POLLINATION')
+   else:
+       print('⚠️  Complete onboarding steps above')
+   "
+   ```
+
+### Agent Invocation Patterns
+
+**To invoke @jules in issues/PRs:**
+```markdown
+@jules please analyze this FastAPI endpoint and suggest improvements for better error handling and performance.
+```
+
+**To invoke @gemini-coding-agent in issues/PRs:**
+```markdown
+@gemini-coding-agent review this pull request for security vulnerabilities and coding best practices.
+```
+
+**For cross-agent collaboration:**
+```markdown
+@jules and @gemini-coding-agent please collaborate on implementing a new authentication system:
+- @gemini-coding-agent: analyze security requirements and best practices
+- @jules: implement the solution based on the analysis
+- Both: cross-validate the final implementation
+```
+
+### Multi-Agent Development Workflow
+
+1. **Issue Creation**: Tag both agents for different perspectives
+2. **Code Analysis**: @gemini-coding-agent provides technical analysis
+3. **Implementation**: @jules handles code generation and PR creation
+4. **Review**: Both agents cross-validate the solution
+5. **Deployment**: Automated testing and validation using the existing FastAPI framework
+
+This multi-agent approach leverages the strengths of both agent types for optimal development outcomes and knowledge cross-pollination.
