@@ -10,5 +10,24 @@
   "logging": {
     "level": "INFO",
     "file": "/var/log/app.log"
+  },
+  "jules_agent": {
+    "enabled": true,
+    "api_endpoint": "localhost:8000",
+    "github_integration": true,
+    "multi_agent_mode": true
+  },
+  "gemini_agent": {
+    "enabled": true,
+    "api_key_env": "GEMINI_API_KEY",
+    "model": "gemini-pro",
+    "pr_review_enabled": true,
+    "code_analysis_enabled": true
+  },
+  "cross_agent": {
+    "enabled": true,
+    "communication_protocol": "fastapi_endpoints",
+    "shared_context": true,
+    "collaboration_mode": "active"
   }
 }
