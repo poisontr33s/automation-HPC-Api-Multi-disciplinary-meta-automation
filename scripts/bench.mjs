@@ -5,7 +5,17 @@ import { performance } from "node:perf_hooks";
 import os from "node:os";
 
 const runtime = process.env.RUNTIME || (globalThis.Bun ? "bun" : "node");
-const pm = process.env.PM || (process.env.npm_config_user_agent?.includes("pnpm") ? "pnpm" : "bun");
+const pm = (() => {
+  if (process.env.PM) return process.env.PM;
+  const ua = process.env.npm_config_user_agent;
+  if (ua) {
+    if (ua.includes("pnpm")) return "pnpm";
+    if (ua.includes("yarn")) return "yarn";
+    if (ua.includes("npm")) return "npm";
+  }
+  if (globalThis.Bun) return "bun";
+  return "unknown";
+})();
 const tsMode = process.env.TS_MODE || "bundler";
 
 const resultsDir = "results";
