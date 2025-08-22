@@ -1,0 +1,13 @@
+node_modules
+.pnpm-store
+bun.lockb
+pnpm-debug.log
+npm-debug.log
+.dist
+coverage
+dist
+.env
+.env.*
+.firebase
+.firebaserc.local
+results
