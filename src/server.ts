@@ -36,7 +36,7 @@ const server = http.createServer((req, res) => {
 
 const port = Number(process.env.PORT) || 3131;
 
-if (import.meta.url === `file://${process.argv[1]}`) {
+if (fileURLToPath(import.meta.url) === resolve(process.argv[1])) {
   server.listen(port, () => {
     console.log(`[server] listening on http://localhost:${port}`);
   });
