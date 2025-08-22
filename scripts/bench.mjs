@@ -25,7 +25,7 @@ async function main() {
   // start server
   const serverCmd = runtime === "bun" ? "bun" : "node";
   const child = spawn(serverCmd, ["dist/server.js"], {
-    shell: process.platform === "win32",
+    shell: true,
     stdio: "inherit",
     env: { ...process.env, TS_MODE: tsMode, PORT: "3132" }
   });
